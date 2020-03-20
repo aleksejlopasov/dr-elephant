@@ -41,7 +41,7 @@ trait SparkUtils {
 
   val SPARK_EVENT_LOG_DIR_KEY = "spark.eventLog.dir"
   val SPARK_EVENT_LOG_COMPRESS_KEY = "spark.eventLog.compress"
-  val DFS_HTTP_PORT = 50070
+  val DFS_HTTP_PORT = 9870
 
   /**
     * Returns the webhdfs FileSystem and Path for the configured Spark event log directory and optionally the
