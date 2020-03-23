@@ -14,6 +14,6 @@ steps:
   id: 'Upload artifact'
   args:
     - 'cp'
-    - 'dist/dr-elephant-*.zip'
+    - '/workspace/dist/dr-elephant-*.zip'
     - 'gs://${_STAGING_BUCKET}/artifacts/dr-elephant'
 timeout: 900s
