@@ -1,7 +1,20 @@
+substitutions:
+  _STAGING_BUCKET: olopa-dp-staging
 steps:
+# Build Dr. Elephant
 - name: 'google/cloud-sdk:285.0.1'
   id: 'Build Dr. Elephant'
   args:
-    - 'bash'
-    - './build.sh'
+  - 'bash'
+  - './build.sh'
+  env:
+  - 'GIT_TAG=$TAG_NAME'
+
 timeout: 900s
+# Upload artifact to GCS
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: 'Upload artifact'
+  args:
+    - 'cp'
+    - 'dist/dr-elephant-*.zip'
+    - 'gs://${_STAGING_BUCKET}/artifacts/dr-elephant'

@@ -39,9 +39,12 @@ sed -i 's/ $OPTS clean compile test $extra_commands/ $OPTS clean compile $extra_
 #  sed -i "s/hadoop_version=[0-9.]\+/hadoop_version=${hadoop_version}/" compile.conf
 #  sed -i "s/spark_version=[0-9.]\+/spark_version=${spark_version}/" compile.conf
 
+# Set Dr. Elephant version
+sed -i "s@APPLICATION_VERSION@${GIT_TAG}@g" build.sbt 
+
 # Build Dr. Elephant and move outputs
 bash compile.sh compile.conf
-gsutil cp dist/dr-elephant-*.zip gs://${STAGING_BUCKET}/artifacts/dr-elephant
+# gsutil cp dist/dr-elephant-*.zip gs://${STAGING_BUCKET}/artifacts/dr-elephant
 # unzip -q dist/dr-elephant-*.zip -d dist-unpacked/
 # mv dist-unpacked/dr-elephant-* /opt/dr-elephant
 
