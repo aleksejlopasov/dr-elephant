@@ -2,7 +2,11 @@
 
 set -euxo pipefail
 
-readonly TYPESAFE_ACTIVATOR_URL=https://downloads.typesafe.com/typesafe-activator/1.3.12/typesafe-activator-1.3.12.zip
+readonly STAGING_BUCKET='olopa-dp-staging'
+readonly TYPESAFE_ACTIVATOR_URL='https://downloads.typesafe.com/typesafe-activator/1.3.12/typesafe-activator-1.3.12.zip'
+
+# Install base packages
+apt install -y wget zip unzip openjdk-8-jdk
 
 # Download and install Typesafe Activator
 wget -nv --timeout=30 --tries=5 --retry-connrefused \
@@ -17,7 +21,7 @@ export PATH=${PATH}:/tmp/typesafe-activator/bin/
 
 # Install dependencies for new Dr. Elephant UI
 curl -sL https://deb.nodesource.com/setup_8.x | bash -
-apt-get install -y nodejs npm
+apt install -y nodejs npm
 npm install -g bower
 pushd web
 bower --allow-root install
