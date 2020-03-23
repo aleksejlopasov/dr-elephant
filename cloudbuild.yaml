@@ -1,6 +1,7 @@
 steps:
-  - name: 'google/cloud-sdk:285.0.1'
-    id: 'Build Dr. Elephant'
-    args:
-      - 'bash'
-      - './build.sh'
+- name: 'google/cloud-sdk:285.0.1'
+  id: 'Build Dr. Elephant'
+  args:
+    - 'bash'
+    - './build.sh'
+timeout: 900s
