@@ -1,5 +1,17 @@
 substitutions:
-  _STAGING_BUCKET: olopa-dp-staging
+  _STAGING_BUCKET: us-staging-pso-wmt-dp-spawner
+  _DATAPROC_STAGING: olopa-dp-staging
+  _REGION: us-central1
+  _ZONE: us-central1-a
+  _SUBNET: olopa-network
+  _MASTER_NODES_NUM: 1
+  _WORKER_NODES_NUM: 2
+  _MASTER_MACHINE_TYPE: n1-standard-4
+  _WORKER_MACHINE_TYPE: n1-standard-4
+  _MASTER_BOOT_DISK_SIZE: 500
+  _WORKER_BOOT_DISK_SIZE: 500
+  _INIT_SCRIPT: gs://${STAGING_BUCKET}/init-actions/dr-elephant.sh
+  _PROJECT: pso-wmt-dp-spawner
 steps:
 # Build Dr. Elephant
 - name: 'google/cloud-sdk:285.0.1'
@@ -9,11 +21,42 @@ steps:
   - './build.sh'
   env:
   - 'GIT_TAG=$TAG_NAME'
-# Upload artifact to GCS
+# Upload zip archive to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
-  id: 'Upload artifact'
+  id: 'Upload archive'
   args:
-    - 'cp'
-    - '/workspace/dist/dr-elephant-*.zip'
-    - 'gs://${_STAGING_BUCKET}/artifacts/'
-timeout: 900s
+  - 'cp'
+  - '/workspace/dist/dr-elephant-*.zip'
+  - 'gs://${_STAGING_BUCKET}/artifacts/'
+# Upload init-action to GCS
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: 'Upload init-action'
+  args:
+  - 'cp'
+  - '-r'
+  - '/workspace/scripts/init-actions/*.sh'
+  - 'gs://${_STAGING_BUCKET}/init-actions/'
+# Create Dataproc cluster
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: 'Create Dataproc cluster'
+  args:
+  - 'dataproc'
+  - 'clusters'
+  - 'create'
+  - '--bucket ${_DATAPROC_STAGING}'
+  - '--region ${_REGION}'
+  - '--subnet ${_SUBNET}'
+  - '--zone ${_ZONE}'
+  - '--master-machine-type ${_MASTER_MACHINE_TYPE}'
+  - '--master-boot-disk-size ${_MASTER_BOOT_DISK_SIZE}'
+  - '--num-workers ${_WORKER_NODES_NUM}'
+  - '--worker-machine-type ${_WORKER_MACHINE_TYPE}'
+  - '--worker-boot-disk-size ${_WORKER_BOOT_DISK_SIZE}'
+  - '--image-version 1.4-debian9'
+  - '--labels principal=olopa'
+  - '--tags olopa'
+  - '--project $_PROJECT'
+  - '--scopes cloud-platform'
+  - '--initialization-actions ${_INIT_SCRIPT}'
+  - '--properties dataproc:yarn.log-aggregation.enabled=true,yarn:yarn.nodemanager.remote-app-log-dir=gs://${_DATAPROC_STAGING}/log-aggregation'
+timeout: 1800s
