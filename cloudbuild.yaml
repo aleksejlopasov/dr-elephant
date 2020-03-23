@@ -15,5 +15,5 @@ steps:
   args:
     - 'cp'
     - '/workspace/dist/dr-elephant-*.zip'
-    - 'gs://${_STAGING_BUCKET}/artifacts/dr-elephant'
+    - 'gs://${_STAGING_BUCKET}/artifacts/'
 timeout: 900s
