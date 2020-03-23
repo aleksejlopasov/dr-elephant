@@ -9,8 +9,6 @@ steps:
   - './build.sh'
   env:
   - 'GIT_TAG=$TAG_NAME'
-
-timeout: 900s
 # Upload artifact to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
   id: 'Upload artifact'
@@ -18,3 +16,4 @@ timeout: 900s
     - 'cp'
     - 'dist/dr-elephant-*.zip'
     - 'gs://${_STAGING_BUCKET}/artifacts/dr-elephant'
+timeout: 900s
