@@ -105,6 +105,5 @@ steps:
   - 'delete'
   - '${_CLUSTER_NAME}'
   - '--region=${_REGION}'
-  - '--zone=${_ZONE}'
   - '--project=${_PROJECT}'
 timeout: 1800s
