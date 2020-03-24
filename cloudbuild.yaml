@@ -1,17 +1,18 @@
 substitutions:
-  _STAGING_BUCKET: 'us-staging-pso-wmt-dp-spawner'
-  _DATAPROC_STAGING: 'olopa-dp-staging'
-  _REGION: 'us-central1'
-  _ZONE: 'us-central1-a'
-  _SUBNET: 'olopa-network'
+  _STAGING_BUCKET: us-staging-pso-wmt-dp-spawner
+  _CLUSTER_NAME: pso-wmt-dp-cluster
+  _DATAPROC_STAGING: olopa-dp-staging
+  _REGION: us-central1
+  _ZONE: us-central1-a
+  _SUBNET: olopa-network
   _MASTER_NODES_NUM: '1'
   _WORKER_NODES_NUM: '2'
   _MASTER_MACHINE_TYPE: n1-standard-4
-  _WORKER_MACHINE_TYPE: 'n1-standard-4'
+  _WORKER_MACHINE_TYPE: n1-standard-4
   _MASTER_BOOT_DISK_SIZE: '500'
   _WORKER_BOOT_DISK_SIZE: '500'
-  _INIT_SCRIPT: 'gs://${STAGING_BUCKET}/init-actions/dr-elephant.sh'
-  _PROJECT: 'pso-wmt-dp-spawner'
+  _INIT_SCRIPT: gs://us-staging-pso-wmt-dp-spawner/init-actions/dr-elephant.sh
+  _PROJECT: pso-wmt-dp-spawner
 steps:
 # Build Dr. Elephant
 - name: 'google/cloud-sdk:285.0.1'
@@ -43,6 +44,7 @@ steps:
   - 'dataproc'
   - 'clusters'
   - 'create'
+  - '${_CLUSTER_NAME}'
   - '--bucket ${_DATAPROC_STAGING}'
   - '--region ${_REGION}'
   - '--subnet ${_SUBNET}'
